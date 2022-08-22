@@ -72,6 +72,10 @@ function component.invoke(address, method, ...)
 
         elseif method == "size" then
             
+        elseif method == "exists" then
+
+        elseif method == "isDirectory" then
+
         elseif method == "" then
         end
     end
