@@ -17,11 +17,14 @@ end
 
 ------------------------------------
 
-local rx, ry = gpu.getResolution()
 bootdrive.makeDirectory("/operatingSystems")
+
+local rx, ry = gpu.getResolution()
+
 local invoke = component.invoke
 local unpack = table.unpack
 local error = error
+local pcall = pcall
 
 local function clear()
     gpu.setBackground(0)
@@ -43,7 +46,7 @@ local function drawMainLogo()
     gpu.setBackground(0xFFFFFF)
     gpu.setForeground(0)
     gpu.fill(2, 2, rx - 2, 1, " ")
-    gpu.set(2, 2, "multi bootloader, use more one operating systems!")
+    gpu.set(2, 2, "multi bootloader, use more one operating system!")
     gpu.setBackground(0)
     gpu.setForeground(0xFFFFFF)
 end
@@ -60,6 +63,14 @@ computer.beep(659)
 computer.beep(1047)
 
 ------------------------------------
+
+local newpath = "/"
+local function repath(path)
+    if unicode.sub(path, 1, unicode.len(newpath)) ~= newpath then
+        return newpath
+    end
+    return  path
+end
 
 function component.invoke(address, method, ...)
     local args = {...}
@@ -84,7 +95,7 @@ function component.invoke(address, method, ...)
 
         end
     end
-    local result = {pcall(invoke(address, method, table.unpack(args)))}
+    local result = {pcall(invoke(address, method, unpack(args)))}
     if not result[1] then
         error(result[2], 0)
     end
