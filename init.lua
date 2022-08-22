@@ -76,7 +76,12 @@ function component.invoke(address, method, ...)
 
         elseif method == "isDirectory" then
 
+        elseif method == "list" then
+
+        elseif method == "lastModified" then
+
         elseif method == "" then
+
         end
     end
     local result = {pcall(invoke(address, method, table.unpack(args)))}
