@@ -6,6 +6,10 @@ if gpu and screen then
     if not gpu.getScreen() then
         gpu.bind(screen)
     end
+    if gpu.maxDepth() > 1 then
+        gpu.setDepth(1)
+        gpu.setDepth(gpu.maxDepth())
+    end
 end
 
 ------------------------------------
@@ -13,3 +17,11 @@ end
 bootdrive.makeDirectory("/operatingSystems")
 
 ------------------------------------
+
+local rx, ry = gpu.getResolution()
+
+local function clear()
+    gpu.setBackground(0)
+    gpu.setForeground(0xFFFFFF)
+    gpu.fill(1, 1, rx, ry, " ")
+end
