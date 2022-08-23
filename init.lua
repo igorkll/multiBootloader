@@ -17,7 +17,8 @@ end
 
 ------------------------------------
 
-bootdrive.makeDirectory("/operatingSystems")
+local path = "/operatingSystems"
+bootdrive.makeDirectory(path)
 
 local rx, ry = gpu.getResolution()
 
@@ -233,16 +234,19 @@ local function menu(strs)
 
     drawMainLogo()
 
-    for i, v in ipairs(strs) do
-        if selected == i then
-            gpu.setBackground(0xFFFFFF)
-            gpu.setForeground(0x000000)
-        else
-            gpu.setBackground(0x000000)
-            gpu.setForeground(0xFFFFFF)
-        end
-        gpu.set(2, i + 2, v)
+    local function draw()
+        for i, v in ipairs(strs) do
+            if selected == i then
+                gpu.setBackground(0xFFFFFF)
+                gpu.setForeground(0x000000)
+            else
+                gpu.setBackground(0x000000)
+                gpu.setForeground(0xFFFFFF)
+            end
+            gpu.set(2, i + 2, v)
+        end 
     end
+    draw()
 
     while true do
         local eventData = {computer.pullSignal()}
@@ -253,13 +257,20 @@ local function menu(strs)
                 if selected > 1 then
                     selected = selected - 1
                 end
+                draw()
             elseif eventData[4] == 208 then
                 if selected < #strs then
                     selected = selected + 1
                 end
+                draw()
             end
         end
     end
+end
+
+local strs = {}
+for i, v in ipairs(bootdrive.list(path) or {}) do
+    table.insert(strs, fs_canonical(v))
 end
 
 while true do
