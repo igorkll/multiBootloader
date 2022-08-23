@@ -1,6 +1,6 @@
-local gpu = component.proxy((computer.getBootGpu() or component.list("gpu")()) or "")
-local screen = computer.getBootScreen() or component.list("screen")()
-local bootdrive = computer.getBootAddress()
+local gpu = component.proxy((computer.getBootGpu and computer.getBootGpu() or component.list("gpu")()) or "")
+local screen = computer.getBootScreen and computer.getBootScreen() or component.list("screen")()
+local bootdrive = compoent.proxy(computer.getBootAddress())
 
 if gpu and screen then
     if not gpu.getScreen() then
