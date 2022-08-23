@@ -17,8 +17,8 @@ end
 
 ------------------------------------
 
-local path = "/operatingSystems"
-bootdrive.makeDirectory(path)
+local mainpath = "/operatingSystems"
+bootdrive.makeDirectory(mainpath)
 
 local rx, ry = gpu.getResolution()
 
@@ -213,10 +213,10 @@ function component.invoke(address, method, ...)
 end
 
 local function boot(name)
-    newpath = fs_concat(newpath, name)
+    newpath = fs_concat(mainpath, name)
 
     local buffer = ""
-    local file = bootdrive.open(fs_concat(newpath, "init.lua"), "rb")
+    local file = assert(bootdrive.open(fs_concat(newpath, "init.lua"), "rb"))
     while true do
         local data = bootdrive.read(file, math.huge)
         if not data then
