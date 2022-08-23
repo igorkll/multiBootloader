@@ -66,17 +66,33 @@ computer.beep(1047)
 
 local newpath = "/"
 local function repath(path)
+    local lpath = ""
+    for i = 1, unicode.len(path) do
+        if unicode.sub(path, i, i) == "\\" then
+            lpath = lpath .. "/"
+        else
+            lpath = lpath .. unicode.sub(path, i, i)
+        end
+    end
+    path = lpath
+
+    if unicode.sub(path, 1, 1) ~= "/" then
+        path = "/" .. path
+    end
+
     if unicode.sub(path, 1, unicode.len(newpath)) ~= newpath then
         return newpath
     end
-    return  path
+    return path
 end
 
 function component.invoke(address, method, ...)
     local args = {...}
     if address == bootdrive.address then
         if method == "open" then
-            
+            if args[2] then
+
+            end
         elseif method == "rename" then
 
         elseif method == "remove" then
