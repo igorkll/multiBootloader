@@ -228,8 +228,34 @@ local function boot(name)
     code()
 end
 
-local function menu(label, strs)
+local function menu(strs)
+    local selected = 1
+
     drawMainLogo()
+
+    for i, v in ipairs(strs) do
+        if selected == i then
+            gpu.setBackground(0xFFFFFF)
+            gpu.setForeground(0x000000)
+        else
+            gpu.setBackground(0x000000)
+            gpu.setForeground(0xFFFFFF)
+        end
+        gpu.set(2, i + 2, v)
+    end
+
+    while true do
+        local eventData = {computer.pullSignal()}
+        if eventData[1] == "key_down" then
+            if eventData[4] == 28 then
+                if eventData[4] == 200 then
+                    
+                elseif eventData[4] == 208 then
+                    
+                end
+            end
+        end
+    end
 end
 
 while true do
