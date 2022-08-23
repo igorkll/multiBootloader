@@ -7,9 +7,7 @@ local screen = computer.getBootScreen and computer.getBootScreen() or component.
 local bootdrive = component.proxy(computer.getBootAddress())
 
 if gpu and screen then
-    if not gpu.getScreen() then
-        gpu.bind(screen)
-    end
+    gpu.bind(screen)
     if gpu.maxDepth() > 1 then
         gpu.setDepth(1)
         gpu.setDepth(gpu.maxDepth())
