@@ -228,6 +228,10 @@ local function boot(name)
     code()
 end
 
+local function menu(label, strs)
+    drawMainLogo()
+end
+
 while true do
     
 end
