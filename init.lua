@@ -1,3 +1,7 @@
+local component = component
+local computer = computer
+local unicode = unicode
+
 local gpu = component.proxy((computer.getBootGpu and computer.getBootGpu() or component.list("gpu")()) or "")
 local screen = computer.getBootScreen and computer.getBootScreen() or component.list("screen")()
 local bootdrive = component.proxy(computer.getBootAddress())
@@ -55,6 +59,7 @@ end
 if gpu then
     drawMainLogo()
 end
+--[[
 computer.beep(784)
 delay(0.25)
 computer.beep(784)
@@ -62,6 +67,7 @@ delay(0.25)
 computer.beep(784)
 computer.beep(659)
 computer.beep(1047)
+]]
 
 ------------------------------------
 
@@ -216,7 +222,7 @@ local function boot(name)
     newpath = fs_concat(mainpath, name)
 
     local buffer = ""
-    local file = assert(bootdrive.open("init.lua"), "rb")
+    local file = assert(bootdrive.open("init.lua", "rb"))
     while true do
         local data = bootdrive.read(file, math.huge)
         if not data then
