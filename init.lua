@@ -216,7 +216,7 @@ local function boot(name)
     newpath = fs_concat(newpath, name)
 
     local buffer = ""
-    local file = bootdrive.open(newpath, "rb")
+    local file = bootdrive.open(fs_concat(newpath, "init.lua"), "rb")
     while true do
         local data = bootdrive.read(file, math.huge)
         if not data then
@@ -224,6 +224,7 @@ local function boot(name)
         end
         buffer = buffer .. data
     end
+    bootdrive.close(file)
 
     local code = assert(load(buffer, "=init"))
     code()
