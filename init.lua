@@ -64,6 +64,100 @@ computer.beep(1047)
 
 ------------------------------------
 
+local function segments(path)
+    local parts = {}
+    for part in path:gmatch("[^\\/]+") do
+        local current, up = part:find("^%.?%.$")
+        if current then
+            if up == 2 then
+                table.remove(parts)
+            end
+        else
+            table.insert(parts, part)
+        end
+    end
+    return parts
+end
+
+local function findNode(path, create, resolve_links)
+    checkArg(1, path, "string")
+    local visited = {}
+    local parts = segments(path)
+    local ancestry = {}
+    local node = mtab
+    local index = 1
+    while index <= #parts do
+        local part = parts[index]
+        ancestry[index] = node
+        if not node.children[part] then
+            local link_path = node.links[part]
+            if link_path then
+                if not resolve_links and #parts == index then
+                    break
+                end
+
+                if visited[path] then
+                    return nil, string.format("link cycle detected '%s'", path)
+                end
+                -- the previous parts need to be conserved in case of future ../.. link cuts
+                visited[path] = index
+                local pst_path = "/" .. table.concat(parts, "/", index + 1)
+                local pre_path
+
+                if link_path:match("^[^/]") then
+                    pre_path = table.concat(parts, "/", 1, index - 1) .. "/"
+                    local link_parts = segments(link_path)
+                    local join_parts = segments(pre_path .. link_path)
+                    local back = (index - 1 + #link_parts) - #join_parts
+                    index = index - back
+                    node = ancestry[index]
+                else
+                    pre_path = ""
+                    index = 1
+                    node = mtab
+                end
+
+                path = pre_path .. link_path .. pst_path
+                parts = segments(path)
+                part = nil -- skip node movement
+            elseif create then
+                node.children[part] = {name = part, parent = node, children = {}, links = {}}
+            else
+                break
+            end
+        end
+        if part then
+            node = node.children[part]
+            index = index + 1
+        end
+    end
+
+    local vnode, vrest = node, #parts >= index and table.concat(parts, "/", index)
+    local rest = vrest
+    while node and not node.fs do
+        rest = rest and filesystem.concat(node.name, rest) or node.name
+        node = node.parent
+    end
+    return node, rest, vnode, vrest
+end
+
+local function fs_canonical(path)
+    local result = table.concat(segments(path), "/")
+    if unicode.sub(path, 1, 1) == "/" then
+        return "/" .. result
+    else
+        return result
+    end
+end
+
+local function fs_concat(...)
+    local set = table.pack(...)
+    for index, value in ipairs(set) do
+        checkArg(index, value, "string")
+    end
+    return fs_canonical(table.concat(set, "/"))
+end
+
 local newpath = "/"
 local function repath(path)
     local lpath = ""
@@ -90,7 +184,7 @@ function component.invoke(address, method, ...)
     local args = {...}
     if address == bootdrive.address then
         if method == "open" then
-            if args[2] then
+            if args[1] then
 
             end
         elseif method == "rename" then
