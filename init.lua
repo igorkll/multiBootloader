@@ -184,9 +184,7 @@ function component.invoke(address, method, ...)
     local args = {...}
     if address == bootdrive.address then
         if method == "open" then
-            if args[1] then
-
-            end
+            args[1] = repath(fs_concat(newpath))
         elseif method == "rename" then
 
         elseif method == "remove" then
