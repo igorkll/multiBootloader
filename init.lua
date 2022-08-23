@@ -272,7 +272,12 @@ local strs = {}
 for i, v in ipairs(bootdrive.list(path) or {}) do
     table.insert(strs, fs_canonical(v))
 end
+table.sort(strs)
+table.insert(strs, "shutdown")
 
-while true do
-    
+local name = menu(strs)
+if name == "shutdown" then
+    computer.shutdown()
+else
+    boot(name)
 end
