@@ -184,23 +184,24 @@ function component.invoke(address, method, ...)
     local args = {...}
     if address == bootdrive.address then
         if method == "open" then
-            args[1] = repath(fs_concat(newpath))
+            args[1] = repath(fs_concat(newpath, args[1]))
         elseif method == "rename" then
-
+            args[1] = repath(fs_concat(newpath, args[1]))
+            args[2] = repath(fs_concat(newpath, args[2]))
         elseif method == "remove" then
-
+            args[1] = repath(fs_concat(newpath, args[1]))
         elseif method == "size" then
-            
+            args[1] = repath(fs_concat(newpath, args[1]))
         elseif method == "exists" then
-
+            args[1] = repath(fs_concat(newpath, args[1]))
         elseif method == "isDirectory" then
-
+            args[1] = repath(fs_concat(newpath, args[1]))
         elseif method == "list" then
-
+            args[1] = repath(fs_concat(newpath, args[1]))
         elseif method == "lastModified" then
-
-        elseif method == "" then
-
+            args[1] = repath(fs_concat(newpath, args[1]))
+        elseif method == "makeDirectory" then
+            args[1] = repath(fs_concat(newpath, args[1]))
         end
     end
     local result = {pcall(invoke(address, method, unpack(args)))}
@@ -210,12 +211,21 @@ function component.invoke(address, method, ...)
     return unpack(result, 2)
 end
 
-local function ()
-    
-end
-
 local function boot(name)
-    
+    newpath = fs_concat(newpath, name)
+
+    local buffer = ""
+    local file = bootdrive.open(newpath, "rb")
+    while true do
+        local data = bootdrive.read(file, math.huge)
+        if not data then
+            break
+        end
+        buffer = buffer .. data
+    end
+
+    local code = assert(load(buffer, "=init"))
+    code()
 end
 
 while true do
