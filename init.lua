@@ -216,7 +216,7 @@ local function boot(name)
     newpath = fs_concat(mainpath, name)
 
     local buffer = ""
-    local file = assert(bootdrive.open(fs_concat(newpath, "init.lua"), "rb"))
+    local file = assert(bootdrive.open("init.lua"), "rb")
     while true do
         local data = bootdrive.read(file, math.huge)
         if not data then
@@ -270,7 +270,7 @@ local function menu(strs)
 end
 
 local strs = {}
-for i, v in ipairs(bootdrive.list(path) or {}) do
+for i, v in ipairs(bootdrive.list(mainpath) or {}) do
     table.insert(strs, fs_canonical(v))
 end
 table.sort(strs)
