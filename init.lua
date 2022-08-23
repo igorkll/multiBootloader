@@ -1,6 +1,6 @@
 local gpu = component.proxy((computer.getBootGpu and computer.getBootGpu() or component.list("gpu")()) or "")
 local screen = computer.getBootScreen and computer.getBootScreen() or component.list("screen")()
-local bootdrive = compoent.proxy(computer.getBootAddress())
+local bootdrive = component.proxy(computer.getBootAddress())
 
 if gpu and screen then
     if not gpu.getScreen() then
@@ -205,7 +205,7 @@ function component.invoke(address, method, ...)
             args[1] = repath(fs_concat(newpath, args[1]))
         end
     end
-    local result = {pcall(invoke(address, method, unpack(args)))}
+    local result = {pcall(invoke, address, method, unpack(args))}
     if not result[1] then
         error(result[2], 0)
     end
