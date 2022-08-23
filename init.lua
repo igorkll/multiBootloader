@@ -248,10 +248,14 @@ local function menu(strs)
         local eventData = {computer.pullSignal()}
         if eventData[1] == "key_down" then
             if eventData[4] == 28 then
-                if eventData[4] == 200 then
-                    
-                elseif eventData[4] == 208 then
-                    
+                return strs[selected]
+            elseif eventData[4] == 200 then
+                if selected > 1 then
+                    selected = selected - 1
+                end
+            elseif eventData[4] == 208 then
+                if selected < #strs then
+                    selected = selected + 1
                 end
             end
         end
